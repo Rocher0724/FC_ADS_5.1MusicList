@@ -1,0 +1,44 @@
+package choongyul.android.com.musicplayer;
+
+/**
+ * Created by myPC on 2017-02-01.
+ */
+
+public class Music {
+    String id;
+    String album_id;
+    String artist;
+    String title;
+
+    public String getArtist() {
+        return artist;
+    }
+
+    public void setArtist(String artist) {
+        this.artist = artist;
+    }
+
+    public String getAlbum_id() {
+        return album_id;
+    }
+
+    public void setAlbum_id(String album_id) {
+        this.album_id = album_id;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+}
