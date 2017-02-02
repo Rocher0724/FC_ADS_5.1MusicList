@@ -1,9 +1,9 @@
 package choongyul.android.com.musicplayer;
 
 import android.content.Intent;
+import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.net.Uri;
-import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -22,7 +22,12 @@ public class PlayerActivity extends AppCompatActivity {
     MediaPlayer player;
     SeekBar mSeekBar;
     TextView mTxtDuration;
-    Boolean isPlaying = false;
+
+    private static final int PLAY = 0;
+    private static final int PAUSE = 1;
+    private static final int STOP = 2;
+
+    private static int playStatus = STOP;
 
     int position = 0; // 현재 음악 위치
 
@@ -31,8 +36,11 @@ public class PlayerActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_player);
 
-        mSeekBar = (SeekBar) findViewById(R.id.seekBar);
+        playStatus = STOP;
 
+        setVolumeControlStream(AudioManager.STREAM_MUSIC);
+
+        mSeekBar = (SeekBar) findViewById(R.id.seekBar);
 
         mImgLeftBtn = (ImageButton) findViewById(R.id.imgPrevBtn);
         mImgRightBtn = (ImageButton) findViewById(R.id.imgNextBtn);
@@ -41,6 +49,8 @@ public class PlayerActivity extends AppCompatActivity {
         mImgLeftBtn.setOnClickListener(clickListener);
         mImgRightBtn.setOnClickListener(clickListener);
         mImgPlayBtn.setOnClickListener(clickListener);
+
+//        mSeekBar.setMax(player.getDuration());
 
         // 1. 데이터 가져오기
         datas = DataLoader.getDatas(this);
@@ -93,10 +103,36 @@ public class PlayerActivity extends AppCompatActivity {
     }
 
     private void playMusic() {
-        Uri musicUri =datas.get(position).uri;
-        player = MediaPlayer.create(this, musicUri); // 시스템파일 - context, 음원파일Uri
-        player.setLooping(false);
-        player.start();
-        isPlaying = true;
+        switch(playStatus) {
+            case STOP:
+                Uri musicUri = datas.get(position).uri;
+                player = MediaPlayer.create(this, musicUri); // 시스템파일 - context, 음원파일Uri
+                player.setLooping(false);
+                player.start();
+                mImgPlayBtn.setImageResource(android.R.drawable.ic_media_pause);
+                playStatus = PLAY;
+                break;
+            case PLAY:
+                player.pause();
+                mImgPlayBtn.setImageResource(android.R.drawable.ic_media_play);
+                playStatus = PAUSE;
+                break;
+            case PAUSE:
+                player.seekTo(player.getCurrentPosition());
+                player.start();
+                playStatus = PLAY;
+                mImgPlayBtn.setImageResource(android.R.drawable.ic_media_pause);
+                break;
+        }
+    }
+
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+
+        if (player != null) {
+            player.release(); // 사용이 끝나면 해제해야만 한다.
+        }
     }
 }
