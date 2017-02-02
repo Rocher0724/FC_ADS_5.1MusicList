@@ -4,6 +4,8 @@ import android.content.Intent;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.net.Uri;
+import android.os.Handler;
+import android.os.Message;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -21,7 +23,7 @@ public class PlayerActivity extends AppCompatActivity {
     PlayerAdapter adapter;
     MediaPlayer player;
     SeekBar mSeekBar;
-    TextView mTxtDuration;
+    TextView mTxtDuration, mTxtCurrent;
 
     private static final int PLAY = 0;
     private static final int PAUSE = 1;
@@ -31,10 +33,28 @@ public class PlayerActivity extends AppCompatActivity {
 
     int position = 0; // 현재 음악 위치
 
+    public static final int PROGRESS_SET = 101;
+
+    Handler handler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            switch(msg.what) {
+                case PROGRESS_SET:
+                    if(player != null)
+                        mSeekBar.setProgress(player.getCurrentPosition());
+                        mTxtCurrent.setText(player.getCurrentPosition()/1000 + "");
+                    break;
+            }
+        }
+    };
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_player);
+
+
 
         playStatus = STOP;
 
@@ -42,15 +62,20 @@ public class PlayerActivity extends AppCompatActivity {
 
         mSeekBar = (SeekBar) findViewById(R.id.seekBar);
 
+
         mImgLeftBtn = (ImageButton) findViewById(R.id.imgPrevBtn);
         mImgRightBtn = (ImageButton) findViewById(R.id.imgNextBtn);
         mImgPlayBtn = (ImageButton) findViewById(R.id.imgPlayBtn);
+        mTxtDuration = (TextView) findViewById(R.id.txtDuration);
+        mTxtCurrent = (TextView) findViewById(R.id.txtCurrent);
+
 
         mImgLeftBtn.setOnClickListener(clickListener);
         mImgRightBtn.setOnClickListener(clickListener);
         mImgPlayBtn.setOnClickListener(clickListener);
 
-//        mSeekBar.setMax(player.getDuration());
+
+
 
         // 1. 데이터 가져오기
         datas = DataLoader.getDatas(this);
@@ -108,9 +133,29 @@ public class PlayerActivity extends AppCompatActivity {
                 Uri musicUri = datas.get(position).uri;
                 player = MediaPlayer.create(this, musicUri); // 시스템파일 - context, 음원파일Uri
                 player.setLooping(false);
+
+                // seekbar 최고길이 설정
+                mSeekBar.setMax(player.getDuration());
+                mTxtDuration.setText((player.getDuration()/1000) + "Sec.");
+
                 player.start();
-                mImgPlayBtn.setImageResource(android.R.drawable.ic_media_pause);
                 playStatus = PLAY;
+                mImgPlayBtn.setImageResource(android.R.drawable.ic_media_pause);
+
+                new Thread() {
+                    @Override
+                    public void run() {
+                        while (playStatus < STOP) {
+                            handler.sendEmptyMessage(PROGRESS_SET);
+                            try {
+                                Thread.sleep(1000);
+                            } catch (InterruptedException e) {
+                                e.printStackTrace();
+                            }
+                        }
+
+                    }
+                }.start();
                 break;
             case PLAY:
                 player.pause();
@@ -134,5 +179,7 @@ public class PlayerActivity extends AppCompatActivity {
         if (player != null) {
             player.release(); // 사용이 끝나면 해제해야만 한다.
         }
+        playStatus = STOP;
     }
+
 }
