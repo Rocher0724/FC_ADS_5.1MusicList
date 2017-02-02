@@ -131,7 +131,7 @@ public class PlayerActivity extends AppCompatActivity {
         switch(playStatus) {
             case STOP:
                 Uri musicUri = datas.get(position).uri;
-                player = MediaPlayer.create(this, musicUri); // 시스템파일 - context, 음원파일Uri
+                player = MediaPlayer.create(this, musicUri); // 시스템파일 - context, 음원파일Uri . player를 최초 실행시키는 방법이다.
                 player.setLooping(false);
 
                 // seekbar 최고길이 설정
