@@ -61,9 +61,9 @@ public class MainActivity extends AppCompatActivity {
 
     private void init() {
         Toast.makeText(this, "프로그램을 실행합니다.", Toast.LENGTH_SHORT).show();
+
         // 3.1 Data를 불러온다.
-        DataLoader data = new DataLoader(this);
-        datas = data.getDatas();
+        datas = DataLoader.getDatas(this);
 
         // 3.2 리사이클러뷰 세팅
         mRecyclerView = (RecyclerView) findViewById(R.id.recyclerView);

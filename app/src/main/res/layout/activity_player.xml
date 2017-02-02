@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_player"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="choongyul.android.com.musicplayer.PlayerActivity"
+    android:background="#14000000">
+
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/relativeLO1"
+            android:layout_margin="20dp"
+            android:background="#454545">
+
+            <android.support.v4.view.ViewPager
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:id="@+id/viewPager"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:layout_above="@+id/controllerLo" ></android.support.v4.view.ViewPager>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:id="@+id/controllerLo"
+                android:layout_height="130dp"
+                android:layout_alignParentBottom="true"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true">
+
+                <ImageButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:srcCompat="@android:drawable/ic_media_ff"
+                    android:id="@+id/imgNextBtn"
+                    android:layout_alignTop="@+id/imgPlayBtn"
+                    android:layout_toRightOf="@+id/imgPlayBtn"
+                    android:layout_toEndOf="@+id/imgPlayBtn"
+                    android:layout_marginLeft="30dp"
+                    android:layout_marginStart="30dp" />
+
+                <ImageButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:srcCompat="@android:drawable/ic_media_rew"
+                    android:id="@+id/imgPrevBtn"
+                    android:layout_marginRight="29dp"
+                    android:layout_marginEnd="29dp"
+                    android:layout_alignParentBottom="true"
+                    android:layout_toLeftOf="@+id/imgPlayBtn"
+                    android:layout_toStartOf="@+id/imgPlayBtn"
+                    android:layout_marginBottom="11dp" />
+
+                <ImageButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:srcCompat="@android:drawable/ic_media_play"
+                    android:id="@+id/imgPlayBtn"
+                    android:layout_alignTop="@+id/imgPrevBtn"
+                    android:layout_centerHorizontal="true" />
+
+                <SeekBar
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentTop="true"
+                    android:layout_marginTop="16dp"
+                    android:id="@+id/seekBar"
+                    android:layout_alignParentRight="true"
+                    android:layout_alignParentEnd="true"
+                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentStart="true" />
+
+                <TextView
+                    android:text="00"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/seekBar"
+                    android:layout_alignParentRight="true"
+                    android:layout_alignParentEnd="true"
+                    android:id="@+id/txtDuration"
+                    android:layout_marginRight="10dp"
+                    android:textColor="#ffffff"/>
+            </RelativeLayout>
+
+        </RelativeLayout>
+
+
+</RelativeLayout>

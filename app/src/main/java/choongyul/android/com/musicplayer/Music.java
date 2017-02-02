@@ -13,6 +13,7 @@ public class Music {
     String artist;
     String title;
     Uri album_image;
+    Uri uri;
     Bitmap bitmap_image;
 
     public String getArtist() {

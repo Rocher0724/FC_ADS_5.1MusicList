@@ -2,7 +2,6 @@ package choongyul.android.com.musicplayer;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -12,7 +11,6 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.TextView;
-
 import com.bumptech.glide.Glide;
 
 import java.util.ArrayList;
@@ -24,10 +22,12 @@ import java.util.ArrayList;
 public class MusicAdapter extends RecyclerView.Adapter<MusicAdapter.Holder>{
     ArrayList<Music> datas;
     Context context;
+    Intent intent = null;
 
     public MusicAdapter(ArrayList<Music> datas, Context context) {
         this.datas = datas;
         this.context = context;
+        intent = new Intent(context, PlayerActivity.class);
     }
 
     @Override
@@ -35,9 +35,13 @@ public class MusicAdapter extends RecyclerView.Adapter<MusicAdapter.Holder>{
         // 이전에는 context 자리에 parent.getContext() 가 들어갔는데 우리는 생성자에 context를 받아왔기 때문에 바로 사용이 가능하다.
         View view = LayoutInflater.from(context).inflate(R.layout.card_item, parent, false);
         Holder holder = new Holder(view);
+
         return holder;
     }
 
+
+
+    // 여기서 new를 해주면 성능이 아주 안좋아진다.
     @Override
     public void onBindViewHolder(MusicAdapter.Holder holder, int position) {
         // 데이터를 행 단위로 꺼낸다
@@ -47,15 +51,18 @@ public class MusicAdapter extends RecyclerView.Adapter<MusicAdapter.Holder>{
         holder.txtTitle.setText(music.getTitle());
         holder.txtArtist.setText(music.getArtist());
 
+        holder.position = position;
+
 //        holder.imageView.setImageURI(music.album_image);
 
         //앨범수가 많으면 앱이 죽음.
 //        if (music.bitmap_image != null) {
-//            holder.imageView.setImageBitmap(music.bitmap_image);
+//            holder.imageView.setImageBitmap(this, music.bitmap_image);
 //        }
 
         Glide.with(context)
                 .load(music.album_image) //로드할 대상 Uri
+                .placeholder(android.R.drawable.ic_menu_close_clear_cancel) // 이미지가 없으면 대신할 이미지 선택.
                 .into(holder.imageView); // 세팅할 이미지뷰
 
         Animation animation = AnimationUtils.loadAnimation(context, android.R.anim.slide_in_left);
@@ -72,6 +79,9 @@ public class MusicAdapter extends RecyclerView.Adapter<MusicAdapter.Holder>{
         TextView txtTitle,txtArtist;
         CardView cardView;
 
+        int position;
+
+
         public Holder(View v) {
             super(v);
 
@@ -79,21 +89,14 @@ public class MusicAdapter extends RecyclerView.Adapter<MusicAdapter.Holder>{
             txtArtist = (TextView) v.findViewById(R.id.txtArtist);
             imageView = (ImageView) v.findViewById(R.id.imageView);
             cardView = (CardView) v.findViewById(R.id.cardView);
-
-//            cardView.setOnClickListener(new View.OnClickListener() {
-//                @Override
-//                public void onClick(View v) {
-//                    Intent intent = null;
-//                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-//                        if ( context.checkSelfPermission(Manifest.permission.CALL_PHONE) == PackageManager.PERMISSION_GRANTED) {
-//                            intent = new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + temp));
-//                        }
-//                    } else {
-//                        intent = new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + temp));
-//                    }
-//                    context.startActivity(intent);
-//                }
-//            });
+            // 클릭 되었을 때 클릭된 position을 받아서 뷰페이저로 넘어감`
+            cardView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    intent.putExtra("position", position);
+                    context.startActivity(intent);
+                }
+            });
         }
     }
 }

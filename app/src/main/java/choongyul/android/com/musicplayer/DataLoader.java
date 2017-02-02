@@ -19,19 +19,21 @@ import java.util.ArrayList;
  */
 
 public class DataLoader {
-    private ArrayList<Music> datas = new ArrayList<>();
-    private Context context;
 
-    public DataLoader(Context context) {
-        this.context = context;
-        load();
-    }
+    //datas는 전역에서 사용되므로 static으로 빼고싶다. 이런경우 public 까지 주지는 않고 get함수를 통해서 public static을 선언해준다.
+    // datas를 두개의 activity에서 공유하기 위해 static으로 변경
+    private static ArrayList<Music> datas = new ArrayList<>();
 
-    public ArrayList<Music> getDatas() {
+    // static 변수인 data 를 체크해서 null이면 load를 실행
+    public static ArrayList<Music> getDatas(Context context) {
+        if (datas == null || datas.size() == 0) {
+            load(context);
+        }
         return datas;
     }
 
-    public void load() {
+    // load는 외부에서 호출될일이 없고 get함수를 통해서만 접근된다.
+    private static void load(Context context) {
         // 1. 주소록에 접근하기 위해 ContentResolver를 불러온다.
         ContentResolver resolver = context.getContentResolver();
 
@@ -65,6 +67,7 @@ public class DataLoader {
                 music.setArtist(cursor.getString(idx));
 
                 music.album_image = getAlbumImageSimple(music.album_id);
+                music.uri = getMusicUri(music.id);
 
                 //glide 사용으로 인해 주석처리.
                 // bitmap 사용방법 해보려고 써봤었음.
@@ -76,15 +79,20 @@ public class DataLoader {
         }
     }
 
+    private static Uri getMusicUri(String music_id) {
+        Uri content_uri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
+        return Uri.withAppendedPath(content_uri, music_id);
+    }
+
     // 가장 간단하게 앨범 이미지를 가져오는 방법.
     // 문제점 : 실제 앨범 데이터만 있어서 이미지를 불러오지 못하는 경우가 있다.
-    private Uri getAlbumImageSimple(String album_id) {
+    private static Uri getAlbumImageSimple(String album_id) {
         return Uri.parse("content://media/external/audio/albumart/" + album_id);
     }
 
     //경로에 가서 이미지를 비트맵으로 바꿔서 가져오는 메소드
     @Deprecated
-    private Bitmap getAlbumImageBitmap(String album_id) {
+    private Bitmap getAlbumImageBitmap(Context context , String album_id) {
         // 1. 앨범 아이디로 Uri 생성
         Uri uri = getAlbumImageSimple(album_id);
         // 2. 컨텐트 리졸버 가져오기
