@@ -28,12 +28,9 @@ public class MainActivity extends AppCompatActivity {
         } else {
             init();
         }
-
-
     }
 
     private final int REQ_CODE = 100;
-
 
     @TargetApi(Build.VERSION_CODES.M)
     private void checkPermission() {

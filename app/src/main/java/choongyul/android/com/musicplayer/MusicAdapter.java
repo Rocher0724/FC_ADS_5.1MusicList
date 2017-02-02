@@ -1,6 +1,8 @@
 package choongyul.android.com.musicplayer;
 
 import android.content.Context;
+import android.content.Intent;
+import android.graphics.Bitmap;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -10,6 +12,8 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.bumptech.glide.Glide;
 
 import java.util.ArrayList;
 
@@ -43,6 +47,17 @@ public class MusicAdapter extends RecyclerView.Adapter<MusicAdapter.Holder>{
         holder.txtTitle.setText(music.getTitle());
         holder.txtArtist.setText(music.getArtist());
 
+//        holder.imageView.setImageURI(music.album_image);
+
+        //앨범수가 많으면 앱이 죽음.
+//        if (music.bitmap_image != null) {
+//            holder.imageView.setImageBitmap(music.bitmap_image);
+//        }
+
+        Glide.with(context)
+                .load(music.album_image) //로드할 대상 Uri
+                .into(holder.imageView); // 세팅할 이미지뷰
+
         Animation animation = AnimationUtils.loadAnimation(context, android.R.anim.slide_in_left);
         holder.cardView.setAnimation(animation);
     }
@@ -65,7 +80,7 @@ public class MusicAdapter extends RecyclerView.Adapter<MusicAdapter.Holder>{
             imageView = (ImageView) v.findViewById(R.id.imageView);
             cardView = (CardView) v.findViewById(R.id.cardView);
 
-//            callImgBtn.setOnClickListener(new View.OnClickListener() {
+//            cardView.setOnClickListener(new View.OnClickListener() {
 //                @Override
 //                public void onClick(View v) {
 //                    Intent intent = null;

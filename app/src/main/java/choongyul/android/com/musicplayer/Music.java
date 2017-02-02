@@ -1,5 +1,8 @@
 package choongyul.android.com.musicplayer;
 
+import android.graphics.Bitmap;
+import android.net.Uri;
+
 /**
  * Created by myPC on 2017-02-01.
  */
@@ -9,6 +12,8 @@ public class Music {
     String album_id;
     String artist;
     String title;
+    Uri album_image;
+    Bitmap bitmap_image;
 
     public String getArtist() {
         return artist;
