@@ -9,11 +9,14 @@ import android.os.Message;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
+
+import java.io.IOException;
 import java.util.ArrayList;
 
 public class PlayerActivity extends AppCompatActivity {
@@ -33,35 +36,24 @@ public class PlayerActivity extends AppCompatActivity {
 
     int position = 0; // 현재 음악 위치
 
-    public static final int PROGRESS_SET = 101;
-
-    Handler handler = new Handler() {
-        @Override
-        public void handleMessage(Message msg) {
-            super.handleMessage(msg);
-            switch(msg.what) {
-                case PROGRESS_SET:
-                    if(player != null)
-                        mSeekBar.setProgress(player.getCurrentPosition());
-                        mTxtCurrent.setText(player.getCurrentPosition()/1000 + "");
-                    break;
-            }
-        }
-    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_player);
 
+        init();
 
+    }
 
+    private void init() {
         playStatus = STOP;
 
+        // 액티비티 생성시 핸드폰 볼륨조절이 음악볼륨조절로 변경
         setVolumeControlStream(AudioManager.STREAM_MUSIC);
 
         mSeekBar = (SeekBar) findViewById(R.id.seekBar);
-
+        mSeekBar.setOnSeekBarChangeListener(seekBarListener);
 
         mImgLeftBtn = (ImageButton) findViewById(R.id.imgPrevBtn);
         mImgRightBtn = (ImageButton) findViewById(R.id.imgNextBtn);
@@ -69,13 +61,9 @@ public class PlayerActivity extends AppCompatActivity {
         mTxtDuration = (TextView) findViewById(R.id.txtDuration);
         mTxtCurrent = (TextView) findViewById(R.id.txtCurrent);
 
-
         mImgLeftBtn.setOnClickListener(clickListener);
         mImgRightBtn.setOnClickListener(clickListener);
         mImgPlayBtn.setOnClickListener(clickListener);
-
-
-
 
         // 1. 데이터 가져오기
         datas = DataLoader.getDatas(this);
@@ -85,6 +73,8 @@ public class PlayerActivity extends AppCompatActivity {
         adapter = new PlayerAdapter(datas, this);
         // 4.뷰 페이져 어댑터 연결
         mViewPager.setAdapter(adapter);
+        // 5.뷰 페이져 리스너 연결 ( 페이저 이동시 이동된 값을 seekbar와 길이 세팅)
+        mViewPager.addOnPageChangeListener(viewPagerListener);
 
         // 5. 특정페이지 호출
         Intent intent = getIntent();
@@ -92,12 +82,45 @@ public class PlayerActivity extends AppCompatActivity {
             Bundle bundle = intent.getExtras();
             position = bundle.getInt("position");
 
-            // 실제 페이지로 이동하기 위한 계산처리
-            //TODO
+            // 음악 기본정보를 설정해준다. (실행시간)
+            // 이유: 첫 페이지가 아닐 경우 위의 setCurrentItem에 의해서 Viwpager의 onPageSelected가 호출된다.
+            // 뷰페이지는 position을 갖고가며 실행시 0번에서 position번째 페이지로 이동하여 position번째를 여는 형식이다.
+            // setCurrentItem을 통해서 이동하는 경우 0번에서 position으로 이동되기 때문에 setCurrentItem - onPageSelected 를 통해
+            // initPlayerSetting 이 호출되는데 0번 일경우 onPageSelected를 호출하지 않기 때문에 initPlayerSetting이 호출되지 않는다.
+            // 따라서 0번일때는 initPlayerSetting를 따로 호출해주고 0번이 아닐때는 onPageSeleted를 통해서 initPlayerSetting를 호출해줘야한다.
+            if (position == 0) {
+                initPlayerSetting();
+            } else {
+                // 실제 페이지로 이동하기 위한 계산처리
+                mViewPager.setCurrentItem(position);
+            }
+        }
+    }
 
-            mViewPager.setCurrentItem(position);
+    private void initPlayerSetting() {
+        // 뷰 페이저로 이동할 경우 플레이어에 세팅된 값을 해제한 후 로직을 실행한다.
+        if (player != null) {
+            // 플레이 상태를 STOP으로 변경
+            playStatus = STOP;
+            // 아이콘을 플레이 버튼으로 변경
+            player.release();
+
+            mImgPlayBtn.setImageResource(android.R.drawable.ic_media_play);
 
         }
+        Uri musicUri = datas.get(position).uri;
+        player = MediaPlayer.create(this, musicUri); // 시스템파일 - context, 음원파일Uri . player를 최초 실행시키는 방법이다.
+        player.setLooping(false);
+
+        // seekbar 최고길이 설정
+        mSeekBar.setMax(player.getDuration());
+        // seekbar 현재 값 0으로 설정
+        mSeekBar.setProgress(0);
+        // 전체 플레이 시간 설정
+        String duration = String.format("%02d", player.getDuration() / 1000 % 60);
+        mTxtDuration.setText((player.getDuration() / 1000 / 60) + ":" + duration);
+        // 현재 플레이시간 0으로 설정
+        mTxtCurrent.setText("0");
 
     }
 
@@ -120,43 +143,57 @@ public class PlayerActivity extends AppCompatActivity {
 
 
     private void prevMusic() {
-
+        if (position > 0) {
+            mViewPager.setCurrentItem(position-1);
+        }
     }
 
     private void nextMusic() {
-
+        if (position > datas.size()) {
+            mViewPager.setCurrentItem(position-1);
+        }
     }
 
     private void playMusic() {
         switch(playStatus) {
             case STOP:
-                Uri musicUri = datas.get(position).uri;
-                player = MediaPlayer.create(this, musicUri); // 시스템파일 - context, 음원파일Uri . player를 최초 실행시키는 방법이다.
-                player.setLooping(false);
-
-                // seekbar 최고길이 설정
-                mSeekBar.setMax(player.getDuration());
-                mTxtDuration.setText((player.getDuration()/1000) + "Sec.");
-
                 player.start();
                 playStatus = PLAY;
+
                 mImgPlayBtn.setImageResource(android.R.drawable.ic_media_pause);
 
-                new Thread() {
+                // sub thread를 생성해서 mediaplayer의 현재 포지션 값으로 seekbar를 변경해준다
+                // 매1초마다 sub thread 에서 동작할 로직 정의
+                Thread thread = new Thread() {
                     @Override
                     public void run() {
                         while (playStatus < STOP) {
-                            handler.sendEmptyMessage(PROGRESS_SET);
+                            if (player != null) {
+                                // 하단의 부분이 메인스레드에서 동작하도록 Runnable 객체를 메인스레드에 던져준다
+                                runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        try { // 플레이어가 도중에 종료되면 예외가 발생한다.
+                                            mSeekBar.setProgress(player.getCurrentPosition());
+                                            mTxtCurrent.setText(player.getCurrentPosition() / 1000 + "");
+                                        } catch (Exception e) {
+
+                                        }
+                                    }
+                                });
+                            }
                             try {
                                 Thread.sleep(1000);
                             } catch (InterruptedException e) {
                                 e.printStackTrace();
                             }
                         }
-
                     }
-                }.start();
+                };
+                // 새로운 스레드 시작
+                thread.start();
                 break;
+
             case PLAY:
                 player.pause();
                 mImgPlayBtn.setImageResource(android.R.drawable.ic_media_play);
@@ -175,11 +212,50 @@ public class PlayerActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-
         if (player != null) {
             player.release(); // 사용이 끝나면 해제해야만 한다.
         }
         playStatus = STOP;
     }
 
+    ViewPager.OnPageChangeListener viewPagerListener = new ViewPager.OnPageChangeListener() {
+        @Override
+        public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+        }
+
+        @Override
+        public void onPageSelected(int position) {
+            PlayerActivity.this.position = position;
+            initPlayerSetting();
+        }
+
+        @Override
+        public void onPageScrollStateChanged(int state) {
+
+        }
+    };
+
+    // seekbar를 이동하면 미디어가 이동하도록 변경
+    SeekBar.OnSeekBarChangeListener seekBarListener = new SeekBar.OnSeekBarChangeListener() {
+        boolean k;
+        int progress;
+        @Override
+        public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+            k = fromUser;
+            this.progress = progress;
+        }
+
+        @Override
+        public void onStartTrackingTouch(SeekBar seekBar) {
+
+        }
+
+        @Override
+        public void onStopTrackingTouch(SeekBar seekBar) {
+            if (player != null && k) {
+                player.seekTo(progress);
+            }
+        }
+    };
 }

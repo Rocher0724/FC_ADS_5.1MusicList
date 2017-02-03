@@ -20,7 +20,7 @@ import java.util.ArrayList;
 
 public class DataLoader {
 
-    //datas는 전역에서 사용되므로 static으로 빼고싶다. 이런경우 public 까지 주지는 않고 get함수를 통해서 public static을 선언해준다.
+    //datas는 전역에서 사용되므로 static으로 빼고싶다. 이런경우 public 까지 주지는 않고 get함수를 public static을 선언해준다.
     // datas를 두개의 activity에서 공유하기 위해 static으로 변경
     private static ArrayList<Music> datas = new ArrayList<>();
 
