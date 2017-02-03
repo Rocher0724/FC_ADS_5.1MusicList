@@ -117,8 +117,7 @@ public class PlayerActivity extends AppCompatActivity {
         // seekbar 현재 값 0으로 설정
         mSeekBar.setProgress(0);
         // 전체 플레이 시간 설정
-        String duration = String.format("%02d", player.getDuration() / 1000 % 60);
-        mTxtDuration.setText((player.getDuration() / 1000 / 60) + ":" + duration);
+        mTxtDuration.setText(covertMiliToTime(player.getDuration()));
         // 현재 플레이시간 0으로 설정
         mTxtCurrent.setText("0");
 
@@ -185,7 +184,7 @@ public class PlayerActivity extends AppCompatActivity {
                                         // try로 해주면 퍼포먼스가 안좋아지기 때문에 if로 처리
                                         try {
                                             mSeekBar.setProgress(player.getCurrentPosition());
-                                            mTxtCurrent.setText(player.getCurrentPosition() / 1000 + "");
+                                            mTxtCurrent.setText(covertMiliToTime(player.getCurrentPosition()));
                                         } catch (Exception e) { e.printStackTrace(); }
                                     }
                                 });
@@ -266,4 +265,12 @@ public class PlayerActivity extends AppCompatActivity {
             }
         }
     };
+
+    private String covertMiliToTime(long mili){
+        long min = mili / 1000 / 60;
+        long sec = mili / 1000 % 60;
+
+
+        return String.format("%02d", min) + ":" + String.format("%02d", sec);
+    }
 }

@@ -34,7 +34,8 @@
                 android:id="@+id/cardTxtTitle"
                 android:layout_weight="1"
                 android:gravity="center"
-                android:textAppearance="@style/TextAppearance.AppCompat.Large" />
+                android:textAppearance="@style/TextAppearance.AppCompat.Large"
+                android:textSize="@dimen/text_title_size"/>
 
             <TextView
                 android:text="Artist"
@@ -42,7 +43,8 @@
                 android:layout_height="wrap_content"
                 android:id="@+id/cardTxtArtist"
                 android:layout_weight="1"
-                android:gravity="center" />
+                android:gravity="center"
+                android:textSize="@dimen/text_artist_size"/>
 
         </LinearLayout>
 

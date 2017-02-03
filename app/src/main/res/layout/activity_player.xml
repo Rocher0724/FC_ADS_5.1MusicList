@@ -84,7 +84,8 @@
                     android:layout_alignParentEnd="true"
                     android:id="@+id/txtDuration"
                     android:layout_marginRight="10dp"
-                    android:textColor="#ffffff"/>
+                    android:textColor="#ffffff"
+                    android:textSize="@dimen/text_duration_size" />
 
                 <TextView
                     android:text="00"
@@ -95,7 +96,8 @@
                     android:layout_alignParentLeft="true"
                     android:layout_alignParentStart="true"
                     android:layout_marginLeft="10dp"
-                    android:textColor="#ffffff"/>
+                    android:textColor="#ffffff"
+                    android:textSize="@dimen/text_duration_size" />
             </RelativeLayout>
 
         </RelativeLayout>
