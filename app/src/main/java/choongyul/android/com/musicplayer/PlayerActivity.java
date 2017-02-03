@@ -122,6 +122,14 @@ public class PlayerActivity extends AppCompatActivity {
         // 현재 플레이시간 0으로 설정
         mTxtCurrent.setText("0");
 
+        // 미디어 플레이어에 완료체크 리스너를 등록한다.
+        player.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+            @Override
+            public void onCompletion(MediaPlayer mp) {
+                nextMusic();
+            }
+        });
+        playMusic();
     }
 
     View.OnClickListener clickListener = new View.OnClickListener() {
@@ -149,8 +157,8 @@ public class PlayerActivity extends AppCompatActivity {
     }
 
     private void nextMusic() {
-        if (position > datas.size()) {
-            mViewPager.setCurrentItem(position-1);
+        if (position < datas.size()) {
+            mViewPager.setCurrentItem(position+1);
         }
     }
 
@@ -173,12 +181,12 @@ public class PlayerActivity extends AppCompatActivity {
                                 runOnUiThread(new Runnable() {
                                     @Override
                                     public void run() {
-                                        try { // 플레이어가 도중에 종료되면 예외가 발생한다.
+                                        // 플레이어가 도중에 종료되면 예외가 발생하기 때문에 예외처리를 해준다.
+                                        // try로 해주면 퍼포먼스가 안좋아지기 때문에 if로 처리
+                                        try {
                                             mSeekBar.setProgress(player.getCurrentPosition());
                                             mTxtCurrent.setText(player.getCurrentPosition() / 1000 + "");
-                                        } catch (Exception e) {
-
-                                        }
+                                        } catch (Exception e) { e.printStackTrace(); }
                                     }
                                 });
                             }
