@@ -11,24 +11,25 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by myPC on 2017-02-02.
  */
 
 public class PlayerAdapter extends PagerAdapter{
-    ArrayList<Music> datas;
+    List<Music> datas;
     Context context;
     LayoutInflater inflater;
 
-    public PlayerAdapter(ArrayList<Music> datas, Context context) {
-        this.datas = datas;
+    public PlayerAdapter(Context context) {
+        this.datas = DataLoader.getDatas(context);
         this.context = context;
         inflater = (LayoutInflater) context.getSystemService(context.LAYOUT_INFLATER_SERVICE);
 
     }
 
-    // 데이터 총 개수수
+    // 데이터 총 개수
     @Override
     public int getCount() {
         return datas.size();

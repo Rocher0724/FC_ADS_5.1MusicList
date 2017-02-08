@@ -12,11 +12,13 @@ import android.support.v7.widget.RecyclerView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
-    ArrayList<Music> datas;
     RecyclerView mRecyclerView;
+
+    private final int REQ_CODE = 100;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,8 +31,6 @@ public class MainActivity extends AppCompatActivity {
             init();
         }
     }
-
-    private final int REQ_CODE = 100;
 
     @TargetApi(Build.VERSION_CODES.M)
     private void checkPermission() {
@@ -53,21 +53,23 @@ public class MainActivity extends AppCompatActivity {
             if(grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 init();
             } else {
-                Toast.makeText(this, "권한을 허용하지 않으시면 프로그램을 실행할 수 없습니다.", Toast.LENGTH_SHORT).show();
+                Message.show("권한을 허용하지 않으시면 프로그램을 실행할 수 없습니다.", this);
                 finish();
             }
         }
     }
 
     private void init() {
-        Toast.makeText(this, "프로그램을 실행합니다.", Toast.LENGTH_SHORT).show();
+        Message.show("프로그램을 실행합니다.", this);
 
-        // 3.1 Data를 불러온다.
-        datas = DataLoader.getDatas(this);
+        listInit();
 
+    }
+
+    private void listInit () {
         // 3.2 리사이클러뷰 세팅
         mRecyclerView = (RecyclerView) findViewById(R.id.recyclerView);
-        MusicAdapter adapter = new MusicAdapter(datas, this);
+        MusicAdapter adapter = new MusicAdapter(this);
         mRecyclerView.setAdapter(adapter);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
     }

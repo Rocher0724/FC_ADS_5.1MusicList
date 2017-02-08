@@ -23,7 +23,7 @@
                 android:layout_alignParentTop="true"
                 android:layout_alignParentLeft="true"
                 android:layout_alignParentStart="true"
-                android:layout_above="@+id/controllerLo" ></android.support.v4.view.ViewPager>
+                android:layout_above="@+id/controllerLo"></android.support.v4.view.ViewPager>
 
             <RelativeLayout
                 android:layout_width="match_parent"
@@ -32,29 +32,6 @@
                 android:layout_alignParentBottom="true"
                 android:layout_alignParentLeft="true"
                 android:layout_alignParentStart="true">
-
-                <ImageButton
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    app:srcCompat="@android:drawable/ic_media_ff"
-                    android:id="@+id/imgNextBtn"
-                    android:layout_alignTop="@+id/imgPlayBtn"
-                    android:layout_toRightOf="@+id/imgPlayBtn"
-                    android:layout_toEndOf="@+id/imgPlayBtn"
-                    android:layout_marginLeft="30dp"
-                    android:layout_marginStart="30dp" />
-
-                <ImageButton
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    app:srcCompat="@android:drawable/ic_media_rew"
-                    android:id="@+id/imgPrevBtn"
-                    android:layout_marginRight="29dp"
-                    android:layout_marginEnd="29dp"
-                    android:layout_alignParentBottom="true"
-                    android:layout_toLeftOf="@+id/imgPlayBtn"
-                    android:layout_toStartOf="@+id/imgPlayBtn"
-                    android:layout_marginBottom="11dp" />
 
                 <ImageButton
                     android:layout_width="wrap_content"
@@ -75,29 +52,54 @@
                     android:layout_alignParentLeft="true"
                     android:layout_alignParentStart="true" />
 
+                <ImageButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:srcCompat="@android:drawable/ic_media_ff"
+                    android:id="@+id/imgNextBtn"
+                    android:layout_marginLeft="35dp"
+                    android:layout_marginStart="35dp"
+                    android:layout_alignTop="@+id/imgPlayBtn"
+                    android:layout_toRightOf="@+id/imgPlayBtn"
+                    android:layout_toEndOf="@+id/imgPlayBtn" />
+
                 <TextView
                     android:text="00"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:id="@+id/txtDuration"
+                    android:layout_marginRight="11dp"
+                    android:textColor="#ffffff"
+                    android:textSize="@dimen/text_duration_size"
+                    android:layout_marginEnd="11dp"
                     android:layout_below="@+id/seekBar"
                     android:layout_alignParentRight="true"
-                    android:layout_alignParentEnd="true"
-                    android:id="@+id/txtDuration"
-                    android:layout_marginRight="10dp"
-                    android:textColor="#ffffff"
-                    android:textSize="@dimen/text_duration_size" />
+                    android:layout_alignParentEnd="true" />
+
+                <ImageButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:srcCompat="@android:drawable/ic_media_rew"
+                    android:id="@+id/imgPrevBtn"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginRight="30dp"
+                    android:layout_marginEnd="30dp"
+                    android:layout_below="@+id/txtCurrent"
+                    android:layout_toLeftOf="@+id/imgPlayBtn"
+                    android:layout_toStartOf="@+id/imgPlayBtn" />
 
                 <TextView
                     android:text="00"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:id="@+id/txtCurrent"
+                    android:textColor="#ffffff"
+                    android:textSize="@dimen/text_duration_size"
                     android:layout_below="@+id/seekBar"
                     android:layout_alignParentLeft="true"
                     android:layout_alignParentStart="true"
-                    android:layout_marginLeft="10dp"
-                    android:textColor="#ffffff"
-                    android:textSize="@dimen/text_duration_size" />
+                    android:layout_marginLeft="14dp"
+                    android:layout_marginStart="14dp" />
             </RelativeLayout>
 
         </RelativeLayout>

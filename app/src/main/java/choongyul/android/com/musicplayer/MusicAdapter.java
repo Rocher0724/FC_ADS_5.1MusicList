@@ -14,18 +14,19 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by myPC on 2017-02-01.
  */
 
 public class MusicAdapter extends RecyclerView.Adapter<MusicAdapter.Holder>{
-    ArrayList<Music> datas;
+    List<Music> datas;
     Context context;
     Intent intent = null;
 
-    public MusicAdapter(ArrayList<Music> datas, Context context) {
-        this.datas = datas;
+    public MusicAdapter(Context context) {
+        this.datas = DataLoader.getDatas(context);
         this.context = context;
         intent = new Intent(context, PlayerActivity.class);
     }
@@ -52,13 +53,6 @@ public class MusicAdapter extends RecyclerView.Adapter<MusicAdapter.Holder>{
         holder.txtArtist.setText(music.getArtist());
 
         holder.position = position;
-
-//        holder.imageView.setImageURI(music.album_image);
-
-        //앨범수가 많으면 앱이 죽음.
-//        if (music.bitmap_image != null) {
-//            holder.imageView.setImageBitmap(this, music.bitmap_image);
-//        }
 
         Glide.with(context)
                 .load(music.album_image) //로드할 대상 Uri
@@ -90,13 +84,14 @@ public class MusicAdapter extends RecyclerView.Adapter<MusicAdapter.Holder>{
             imageView = (ImageView) v.findViewById(R.id.imageView);
             cardView = (CardView) v.findViewById(R.id.cardView);
             // 클릭 되었을 때 클릭된 position을 받아서 뷰페이저로 넘어감`
-            cardView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    intent.putExtra("position", position);
-                    context.startActivity(intent);
-                }
-            });
+            cardView.setOnClickListener(listener);
         }
+        private View.OnClickListener listener = new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                intent.putExtra("position", position);
+                context.startActivity(intent);
+            }
+        };
     }
 }

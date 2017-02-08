@@ -8,13 +8,13 @@ import android.net.Uri;
  */
 
 public class Music {
-    String id;
-    String album_id;
-    String artist;
-    String title;
+    private String id;
+    private String album_id;
+    private String artist;
+    private String title;
     Uri album_image;
     Uri uri;
-    Bitmap bitmap_image;
+    private Bitmap bitmap_image;
 
     public String getArtist() {
         return artist;

@@ -6,5 +6,5 @@
 
     <dimen name="text_title_size">44sp</dimen>
     <dimen name="text_artist_size">28sp</dimen>
-    <dimen name="text_duration_size">2sp</dimen>
+    <dimen name="text_duration_size">28sp</dimen>
 </resources>
