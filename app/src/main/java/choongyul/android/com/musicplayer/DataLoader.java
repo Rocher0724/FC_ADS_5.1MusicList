@@ -15,11 +15,23 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
+import static android.icu.lang.UCharacter.GraphemeClusterBreak.T;
+
 /**
  * Created by myPC on 2017-02-01.
  */
 
 public class DataLoader {
+
+    // 데이터 로더 객체와 datas 를 싱글톤으로 구현하고
+    // 데이터 로더를 통해서만 데이터를 불러와야한다.
+    ////
+//    private static DataLoader<?> dataLoader;
+//    private ArrayList<T> datas;
+//    private DAtaLoader(){}
+
+
+    ////
 
     // 2. 데이터 컨텐츠 URI 정의
     private final static Uri URI = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
